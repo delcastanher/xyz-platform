@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Resultado</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="/index.css" media="screen" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body>
+        <dl>
+            <?php foreach ($this->questions as $question): ?>
+                <dt>
+                    <label class="required"><?php echo $this->escape($question->title); ?></label>
+                </dt>
+                <dd class="response">
+                    <?php if (!empty($question->excerpt)): ?>
+                        <p class="description"><?php echo $this->escape($question->excerpt); ?></p>
+                    <?php endif; ?>
+                    <?php if ($question->form_element == 'Inputs') : ?>
+                        <?php foreach ($this->answers[$question->id] as $answer): ?>
+                            <?php echo $this->escape($answer); ?>,
+                        <?php endforeach; ?>
+
+                    <?php elseif ($question->form_element == 'Checkboxes'): ?>
+                        <?php foreach ($this->answers[$question->id] as $answer): ?>
+                            <div class="checkboxresponse">
+                                <?php if ($answer['count'] == 0): ?>
+                                    <img src="/zero.png" alt="0%" title="0%" width="5" height="5" />
+                                <?php else: ?>
+                                    <img src="/um.png" alt="<?= $answer['percentage'] ?> %" title="<?= $answer['percentage'] ?> %" width="<?= $answer['size'] ?>" height="<?= $answer['size'] ?>" />
+                                <?php endif; ?>
+                            </div>
+                            <?php echo $this->escape($answer['option']); ?><br />
+                        <?php endforeach; ?>
+
+                    <?php elseif ($question->form_element == 'SemanticDifferentialScales'): ?>
+                        <?php foreach ($this->answers[$question->id] as $answer): ?>
+                            <?php echo $this->escape($answer['left_value']); ?>
+                            <?php foreach ($answer['options'] as $option): ?>
+                                <?php if ($option['count'] == 0): ?>
+                                    <img src="/zero.png" alt="0%" title="0%" width="5" height="5" />
+                                <?php else: ?>
+                                    <img src="/um.png" alt="<?= $option['percentage'] ?> %" title="<?= $option['percentage'] ?> %" width="<?= $option['size'] ?>" height="<?= $option['size'] ?>" />
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                            <?php echo $this->escape($answer['right_value']); ?>
+                            <br />
+                        <?php endforeach; ?>
+
+                    <?php endif; ?>
+                </dd>
+            <?php endforeach; ?>
+        </dl>
+    </body>
+</html>
